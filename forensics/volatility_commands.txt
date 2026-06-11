@@ -1,0 +1,99 @@
+# Volatility3 Memory Forensics Commands
+# Target: Windows 11 Build 22621
+# Memory dump acquired with winpmem v4.0
+# Dump location: /home/cypherguy/memdump.raw (5GB)
+# Analysis machine: Kali Linux 192.168.100.10
+
+# ─────────────────────────────────────────────
+# SETUP
+# ─────────────────────────────────────────────
+
+# Install Volatility3
+pip3 install volatility3 --break-system-packages
+
+# Download Windows symbol files (800MB)
+# https://downloads.volatilityfoundation.org/volatility3/symbols/windows.zip
+# Extract into Volatility symbols directory
+unzip windows.zip -d ~/.local/lib/python3.13/site-packages/volatility3/symbols/
+
+# Verify symbols are present
+ls ~/.local/lib/python3.13/site-packages/volatility3/symbols/windows/
+
+# ─────────────────────────────────────────────
+# MEMORY ACQUISITION (on Windows victim)
+# ─────────────────────────────────────────────
+
+# Run on Windows VM as Administrator
+.\winpmem.exe C:\memdump.raw
+
+# Verify dump size (should be 5GB)
+ls C:\memdump.raw
+
+# Transfer dump to Kali via netcat
+# On Kali:
+nc -lvp 9999 > /home/cypherguy/memdump.raw
+
+# On Windows PowerShell:
+$client = New-Object System.Net.Sockets.TcpClient('192.168.100.10', 9999)
+$stream = $client.GetStream()
+$file = [System.IO.File]::OpenRead('C:\memdump.raw')
+$file.CopyTo($stream)
+$file.Close()
+$client.Close()
+Write-Host "Transfer complete"
+
+# ─────────────────────────────────────────────
+# ANALYSIS COMMANDS
+# ─────────────────────────────────────────────
+
+# Command 1 — Full process list
+vol -f /home/cypherguy/memdump.raw windows.pslist 2>/dev/null
+
+# Command 1b — Filter for attack-relevant processes
+vol -f /home/cypherguy/memdump.raw windows.pslist 2>/dev/null | grep -i "firefox\|sysmon\|powershell\|winpmem"
+
+# Expected output:
+# 4024   776   Sysmon64.exe    ... 2026-06-07 08:14:53
+# 7444   4760  powershell.exe  ... 2026-06-07 08:20:31
+# 10132  7444  winpmem.exe     ... 2026-06-07 08:26:51
+
+# ─────────────────────────────────────────────
+
+# Command 2 — Network connections
+vol -f /home/cypherguy/memdump.raw windows.netstat 2>/dev/null
+
+# Look for connections to/from 192.168.100.10 (Kali/Bettercap)
+# Expected: entries showing 192.168.100.30 active on host-only network
+
+# ─────────────────────────────────────────────
+
+# Command 3 — Command line arguments
+vol -f /home/cypherguy/memdump.raw windows.cmdline 2>/dev/null | grep -i "firefox\|powershell\|sysmon\|winpmem"
+
+# Expected output:
+# 4024   Sysmon64.exe   C:\Windows\Sysmon64.exe
+# 7444   powershell.exe "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe"
+# 10132  winpmem.exe    "C:\Users\cyphe\Desktop\winpmem.exe" C:\memdump.raw
+
+# ─────────────────────────────────────────────
+# KEY FINDING
+# ─────────────────────────────────────────────
+
+# The windows.cmdline output confirms:
+# 1. Sysmon64 was running as C:\Windows\Sysmon64.exe — forensic logging active
+# 2. PowerShell was used for lab administration during the attack window
+# 3. winpmem.exe was executed with C:\memdump.raw — proves acquisition command
+
+# ─────────────────────────────────────────────
+# CHALLENGE ENCOUNTERED
+# ─────────────────────────────────────────────
+
+# Volatility3 initially failed with:
+# "Unsatisfied requirement plugins.PsList.kernel.symbol_table_name"
+#
+# Cause: Windows 11 build 22621 symbol file not in standard pack
+#
+# Resolution: Switch Kali to NAT temporarily
+# Volatility auto-downloaded correct symbol from Microsoft symbol server
+# Switched back to host-only after symbols cached locally
+# All three analysis commands completed successfully

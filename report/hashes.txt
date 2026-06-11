@@ -1,0 +1,19 @@
+# MD5 password hashes generated from SQL injection results
+# Format: username:md5hash
+# Cracked with: john --format=raw-md5 --wordlist=/usr/share/wordlists/rockyou.txt
+# Date: 06/06/2026
+
+alice:482c811da5d5b4bc6d497ffa98491e38
+bob:d8578edf8458ce06fbc5bb76a58c5ca4
+carol:0d107d09f5bbe40cade3de5c71e9e9b7
+sime:9a353b4e2cbf085cbd5aa67ada26ea1b
+mbaku:2a97516c354b68848cdbd8f54a226a0a
+
+# Results:
+# alice:password123   CRACKED
+# bob:qwerty          CRACKED
+# carol:letmein       CRACKED
+# sime:sime123        NOT IN WORDLIST
+# mbaku:mbaku123      NOT IN WORDLIST
+#
+# 3 password hashes cracked, 2 left

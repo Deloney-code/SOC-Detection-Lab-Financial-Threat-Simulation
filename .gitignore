@@ -1,0 +1,9 @@
+*.raw
+*.key
+*.pem
+*.crt
+memdump*
+__pycache__/
+*.pyc
+*.docx
+*.pdf

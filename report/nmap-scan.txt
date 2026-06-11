@@ -1,0 +1,43 @@
+# Nmap scan report for 192.168.100.20
+# SecureBank Lab — Reconnaissance Phase
+# Date: 06/06/2026
+# Command: sudo nmap -sV -sC -O 192.168.100.20 -oN /root/securebank_scan.txt
+
+Starting Nmap 7.94 ( https://nmap.org )
+Nmap scan report for 192.168.100.20
+Host is up (0.00089s latency).
+
+PORT     STATE SERVICE     VERSION
+22/tcp   open  ssh         OpenSSH 9.6p1 Ubuntu 3ubuntu13 (Ubuntu Linux; protocol 2.0)
+| ssh-hostkey:
+|   256 3d:2c:77:ee:06:2e:e3:71:5c:1d:e2:e6:f0:85 (ECDSA)
+|_  256 46:b6:97:ce:2e:46:17:00:5e:91:81:60:92:3e (ED25519)
+80/tcp   open  http        Apache httpd 2.4.58 ((Ubuntu))
+|_http-title: Apache2 Ubuntu Default Page: It works
+|_http-server-header: Apache/2.4.58 (Ubuntu)
+139/tcp  open  netbios-ssn Samba smbd 4
+443/tcp  open  ssl/http    Apache httpd 2.4.58 ((Ubuntu))
+|_http-title: Apache2 Ubuntu Default Page: It works
+| ssl-cert: Subject: commonName=192.168.100.144/organizationName=CyberSec Lab/countryName=CM
+| Not valid before: 2026-05-27T08:44:03
+| Not valid after:  2027-05-27T08:44:03
+|_ssl-date: TLS randomness does not represent time
+|_http-server-header: Apache/2.4.58 (Ubuntu)
+445/tcp  open  netbios-ssn Samba smbd 4
+5000/tcp open  http        Werkzeug/3.0.1 Python/3.12.3
+| http-title: SecureBank Online Banking
+|_Requested resource was /login
+| http-server-header: Werkzeug/3.0.1 Python/3.12.3
+
+Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel
+
+Host script results:
+| smb2-security-mode:
+|   3.1.1:
+|_    Message signing enabled but not required
+| smb2-time:
+|   date: 2026-06-06T11:13:01
+|_  start_date: N/A
+
+OS and Service detection performed.
+Nmap done: 1 IP address (1 host up) scanned in 29.47 seconds
