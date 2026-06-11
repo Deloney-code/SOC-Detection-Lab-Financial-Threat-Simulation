@@ -1,4 +1,4 @@
-#  SOC Detection Lab — Financial Threat Simulation
+#  SOC Detection Lab  Financial Threat Simulation
 
 ### SQL Injection · MITM · Session Hijacking · 
 ### Suricata IDS · Memory Forensics · Incident Response
