@@ -22,7 +22,7 @@ a financial data breach exceeds $6 million.
 
 Yet the attacks that cause most of those
 breaches are not sophisticated zero-days.
-They are techniques documented since 1998 —
+They are techniques documented since 1998 
 SQL injection, session hijacking, SSL stripping.
 
 The reason organizations keep falling to
@@ -30,7 +30,7 @@ these attacks is not ignorance.
 
 It is the gap between knowing a vulnerability
 exists and understanding exactly how an attacker
-exploits it end to end — and what each defensive
+exploits it end to end  and what each defensive
 control actually stops.
 
 This engagement closes that gap.
